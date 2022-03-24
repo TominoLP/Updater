@@ -12,7 +12,6 @@ import java.net.URISyntaxException
 import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.function.Consumer
-import java.util.function.Function
 
 object UpdaterAPI {
     private const val API = "https://api.github.com/repos/ZeusSeinGrossopa/UpdaterAPI/releases/latest"
@@ -56,7 +55,8 @@ object UpdaterAPI {
             val reader = BufferedReader(InputStreamReader(`in`, StandardCharsets.UTF_8))
             if (connect.responseCode == 200) {
                 val `object` = JsonParser.parseReader(reader).asJsonObject
-                consumer.accept(`object`.entrySet().stream().filter { (key): Map.Entry<String, JsonElement?> -> key == "assets" }
+                consumer.accept(
+                    `object`.entrySet().stream().filter { (key): Map.Entry<String, JsonElement?> -> key == "assets" }
                         .findFirst().orElseThrow { RuntimeException("Can not update system") }
                         .value.asJsonArray[0].asJsonObject["browser_download_url"].asString)
             }
@@ -90,10 +90,17 @@ object UpdaterAPI {
     @Throws(IOException::class)
     fun update(updaterFile: File, oldFile: File?, url: String?, newFile: File, restart: Boolean) {
         val javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"
-        val builder = ProcessBuilder(javaBin, "-jar", updaterFile.absolutePath, url, oldFile!!.absolutePath, newFile.absolutePath, if (restart) "true" else "")
+        val builder = ProcessBuilder(
+            javaBin,
+            "-jar",
+            updaterFile.absolutePath,
+            url,
+            oldFile!!.absolutePath,
+            newFile.absolutePath,
+            if (restart) "true" else ""
+        )
         if (autoDelete) {
             autoDelete = false
-            println(oldFile.parentFile.absolutePath)
             downloadUpdater(oldFile.parentFile) { file: File? ->
                 try {
                     builder.start()
