@@ -1,4 +1,4 @@
-package de.tomino.serverjars;
+package de.tomino.serverjars
 
 import java.io.File
 import java.io.FileInputStream
@@ -31,7 +31,7 @@ class Config(private val file: File) {
 
     val jvmArgs: Array<String>
         get() {
-            val args = properties.getProperty("jvmArgs", DEFAULT_JVM_ARGS).split(" -").toTypedArray()
+            val args = properties.getProperty("jvmArgs", DEFAULT_JVM_ARGS).split(" -".toRegex()).toTypedArray()
             for (i in args.indices) {
                 args[i] = (if (i != 0) "-" else "") + args[i].trim { it <= ' ' }
             }
@@ -75,7 +75,12 @@ class Config(private val file: File) {
         if (!file.parentFile.exists()) {
             Files.createDirectories(file.toPath().parent)
         }
-        FileOutputStream(file).use { out -> properties.store(out, HEADER) }
+        FileOutputStream(file).use { out ->
+            properties.store(
+                out,
+                HEADER
+            )
+        }
     }
 
     fun reset() {

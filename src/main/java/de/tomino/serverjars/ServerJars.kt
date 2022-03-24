@@ -26,7 +26,14 @@ object ServerJars {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        println("\n  █████╗  █████╗ ███████╗ █████╗ ███╗  ██╗ ██████╗██████╗ ██╗██████╗ ███████╗\n ██╔══██╗██╔══██╗██╔════╝██╔══██╗████╗ ██║██╔════╝██╔══██╗██║██╔══██╗██╔════╝\n ██║  ██║██║  ╚═╝█████╗  ███████║██╔██╗██║╚█████╗ ██████╔╝██║██████╔╝█████╗\n ██║  ██║██║  ██╗██╔══╝  ██╔══██║██║╚████║ ╚═══██╗██╔═══╝ ██║██╔══██╗██╔══╝\n ╚█████╔╝╚█████╔╝███████╗██║  ██║██║ ╚███║██████╔╝██║     ██║██║  ██║███████╗\n  ╚════╝  ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚══╝╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝")
+        println(
+                    " █████╗  █████╗ ███████╗ █████╗ ███╗  ██╗ ██████╗██████╗ ██╗██████╗ ███████╗\n" +
+                    "██╔══██╗██╔══██╗██╔════╝██╔══██╗████╗ ██║██╔════╝██╔══██╗██║██╔══██╗██╔════╝\n" +
+                    "██║  ██║██║  ╚═╝█████╗  ███████║██╔██╗██║╚█████╗ ██████╔╝██║██████╔╝█████╗\n" +
+                    "██║  ██║██║  ██╗██╔══╝  ██╔══██║██║╚████║ ╚═══██╗██╔═══╝ ██║██╔══██╗██╔══╝\n" +
+                    "╚█████╔╝╚█████╔╝███████╗██║  ██║██║ ╚███║██████╔╝██║     ██║██║  ██║███████╗\n" +
+                    " ╚════╝  ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚══╝╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝"
+        )
         println("\nSearching for updates... \n")
 
         try {
@@ -111,16 +118,6 @@ object ServerJars {
                 for (typeList in typeMap.values) {
                     types.addAll(typeList)
                 }
-
-                cfg.setJvmArgs("-Xms" + {} + " -Xmx" + {} + " -XX:+UseG1GC -XX:+ParallelRefProcEnabled " +
-                        "-XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC " +
-                        "-XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 " +
-                        "-XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 " +
-                        "-XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 " +
-                        "-XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
-                        "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 " +
-                        "-Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true")
-
                 println("""What server type would you like to use? Available types:""".trimIndent())
                 val typeString = StringBuilder()
                 var i = 0
@@ -152,6 +149,36 @@ object ServerJars {
                     println("Unable to get user input -> defaulting to latest.")
                 }
                 version = chosenVersion
+
+                println("\nHow much memory would like to allocate to the server? (e.g. 512M or 1G for 1 gigabyte)\n" + "Leave this blank or type '1G' for the default")
+                var memoryInput = awaitInput({ s: String ->
+                    s.trim { it <= ' ' }
+                        .isEmpty() || looksLikeValidJvmMemoryFormat(s)
+                }, "That memory format looks incorrect.")
+                if (memoryInput == null || memoryInput.isEmpty()) {
+                    memoryInput = "1G"
+                }
+                println("\nWould you like to use aikar.co's JVM Startup flags (recommended for most users)? [Y/N]")
+                if ((awaitInput({ s: String ->
+                        s.equals(
+                            "y",
+                            ignoreCase = true
+                        ) || s.equals("n", ignoreCase = true)
+                    }, "Please choose Y or N") == "y")) {
+                    cfg.setJvmArgs(
+                        ("-Xms" + memoryInput + " -Xmx" + memoryInput + " -XX:+UseG1GC -XX:+ParallelRefProcEnabled " +
+                                "-XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC " +
+                                "-XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 " +
+                                "-XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 " +
+                                "-XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 " +
+                                "-XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
+                                "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 " +
+                                "-Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true")
+                    )
+                } else {
+                    cfg.setJvmArgs("-Xmx$memoryInput")
+                }
+
 
                 println("\nBy changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).")
                 println("For running the server its necessary to accept the eula. Would you accept the eula?")
@@ -218,7 +245,9 @@ object ServerJars {
                 .listFiles { _: File?, name: String -> name.lowercase(Locale.getDefault()).endsWith(".jar") }
         return files?.get(0)
     }
-
+    private fun looksLikeValidJvmMemoryFormat(memory: String): Boolean {
+        return memory.matches(Regex.fromLiteral("[0-9]+[KMG]?"))
+    }
     private val javaExecutable: String
         get() {
             val binDir = File(System.getProperty("java.home"), "bin")
@@ -274,4 +303,5 @@ fun awaitInput(predicate: Predicate<String>, errorMessage: String): String? {
         }
     } catch (ignore: IOException) { TODO() }
     return null
+
 }
