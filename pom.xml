@@ -11,7 +11,7 @@
         <java.release>8</java.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.6.20-RC</kotlin.version>
+        <kotlin.version>1.6.20-RC2</kotlin.version>
     </properties>
 
     <build>
