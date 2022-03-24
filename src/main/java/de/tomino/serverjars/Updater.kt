@@ -31,7 +31,11 @@ object Updater {
         needUpdate = checkForUpdate(true)
         if (needUpdate) {
             println("New Version found! Restarting...")
-            UpdaterAPI.update(DOWNLOAD_URL, File(jarPath.parentFile.absoluteFile.toString() + "/" + jarPath.name), false)
+            UpdaterAPI.update(
+                DOWNLOAD_URL,
+                File(jarPath.parentFile.absoluteFile.toString() + "/" + jarPath.name),
+                false
+            )
             exitProcess(0)
         }
     }
