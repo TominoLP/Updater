@@ -189,10 +189,7 @@ object ServerJars {
                     println("\nYou need to accept the eula to build a minecraft server!")
                     exitProcess(0)
                 }
-                if (!acceptInput.equals("true", true) || !acceptInput.equals("y", true) || !acceptInput.equals("accept", true) || !acceptInput.equals("yes")) {
-                    println("\nYou need to accept the eula to build a minecraft server!")
-                    exitProcess(0)
-                }
+
 
                 println("Setup completed!\n")
                 cfg.type = type
