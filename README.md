@@ -1,5 +1,5 @@
 # Updater
-Advanced fork of  Serverjar´s updater written in Kotlin
+Advanced Serverjar updater written in Kotlin
 
 First Stable release out now!
 
