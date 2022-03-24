@@ -143,7 +143,7 @@ object ServerJars {
                 }
                 version = chosenVersion
 
-                println("\nHow much memory would like to allocate to the server? (e.g. 512M or 1G for 1 gigabyte)\n" + "Leave this blank or type '1G' for the default")
+                println("\nHow much memory would like to allocate to the server? (e.g. 512M or 1G for 1 gigabyte)\n" + "Leave this blank for default (512M is at least necessary to run the server)")
                 var memoryInput = awaitInput({ s: String ->
                     s.trim { it <= ' ' }
                         .isEmpty() || looksLikeValidJvmMemoryFormat(s)
@@ -151,7 +151,7 @@ object ServerJars {
                 if (memoryInput == null || memoryInput.isEmpty()) {
                     memoryInput = "1G"
                 }
-                println("\nWould you like to use aikar.co's JVM Startup flags (recommended)? [Y/N]")
+                println("\nWould you like to use advanced JVM Startup flags (recommended)? [Y/N]")
                 if ((awaitInput({ s: String ->
                         s.equals(
                             "y",
@@ -159,14 +159,13 @@ object ServerJars {
                         ) || s.equals("n", ignoreCase = true)
                     }, "Please choose Y or N") == "y")) {
                     cfg.setJvmArgs(
-                        ("-Xms" + memoryInput + " -Xmx" + memoryInput + " -XX:+UseG1GC -XX:+ParallelRefProcEnabled " +
-                                "-XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC " +
-                                "-XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 " +
-                                "-XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 " +
-                                "-XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 " +
-                                "-XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
-                                "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 " +
-                                "-Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true")
+                        ("-Xms" + memoryInput + " -Xmx" + memoryInput + " -java -Xms4096M -Xmx4096M --add-modules=jdk.incubator.vector" +
+                                " -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions" +
+                                " -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4" +
+                                " -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5" +
+                                " -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1" +
+                                " -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -XX:G1NewSizePercent=30" +
+                                " -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20")
                     )
                 } else {
                     cfg.setJvmArgs("-Xmx$memoryInput")
@@ -174,7 +173,7 @@ object ServerJars {
 
 
                 println("\nBy changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).")
-                println("For running the server its necessary to accept the eula. Would you accept the eula?")
+                println("For running the server its necessary to accept the eula. Would you accept the eula? [Y/N]")
 
                 val acceptInput = awaitInput({ true }, "Hmm.. your input was somehow incorrect...")
 
