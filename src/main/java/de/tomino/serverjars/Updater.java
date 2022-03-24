@@ -20,7 +20,7 @@ public class Updater {
     private static String DOWNLOAD_URL;
     private static boolean needUpdate;
 
-    private static final String CURRENT_VERSION = "1.0.0";
+    private static final String CURRENT_VERSION = "1.2.0";
 
     public static void start() {
         UpdaterAPI.downloadUpdater(new File(getJarPath().getParentFile() + "/Updater.jar"));
