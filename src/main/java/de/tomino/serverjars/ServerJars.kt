@@ -68,13 +68,6 @@ object ServerJars {
             println("\nThe attempt was successful!")
         }
 
-        if (CFG_FILE.exists()) {
-            println("\nAccepting eula...")
-            addEulaFile(WORKING_DIRECTORY)
-        } else {
-            println("\nNot good...")
-        }
-
         val vmArgs = ManagementFactory.getRuntimeMXBean().inputArguments.toTypedArray()
 
         val cmd = arrayOfNulls<String>(vmArgs.size + args.size + 3)
@@ -183,11 +176,20 @@ object ServerJars {
                 println("For running the server its necessary to accept the eula. Would you accept the eula? [Y/N]")
 
                 val acceptInput = awaitInput({ true }, "Hmm.. your input was somehow incorrect...")
-                if (!acceptInput.equals("true", true) || !acceptInput.equals("y", true) || !acceptInput.equals("accept", true) || acceptInput.equals("yes")) {
+
+                if ((awaitInput({ s: String ->
+                            s.equals(
+                                    "y",
+                                    ignoreCase = true
+                            ) || s.equals("n", ignoreCase = true)
+                        }, "Please choose Y or N") == "y")) {
+
+                    addEulaFile(WORKING_DIRECTORY)
+                } else {
                     println("\nYou need to accept the eula to build a minecraft server!")
                     exitProcess(0)
                 }
-
+                
                 println("Setup completed!\n")
                 cfg.type = type
                 cfg.version = version
