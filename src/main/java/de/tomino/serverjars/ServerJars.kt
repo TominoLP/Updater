@@ -62,10 +62,10 @@ object ServerJars {
         }
 
         if (CFG_FILE.exists()) {
-            println("\nAccepting eula...");
+            println("\nAccepting eula...")
             addEulaFile(WORKING_DIRECTORY)
         } else {
-            println("\nNot good...");
+            println("\nNot good...")
         }
 
         val vmArgs = ManagementFactory.getRuntimeMXBean().inputArguments.toTypedArray()
@@ -154,7 +154,7 @@ object ServerJars {
                 version = chosenVersion
 
                 println("\nBy changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).")
-                println("For running the server its necessary to accept the eula. Would you accept the eula?");
+                println("For running the server its necessary to accept the eula. Would you accept the eula?")
 
                 val acceptInput = awaitInput({ true }, "Hmm.. your input was somehow incorrect...")
                 if (!acceptInput.equals(acceptInput, true) || !acceptInput.equals("y", true) || !acceptInput.equals("accept", true) || acceptInput.equals("yes")) {
@@ -233,7 +233,7 @@ object ServerJars {
             return javaExe.absolutePath
         }
 
-    fun addEulaFile(directory: File) {
+    private fun addEulaFile(directory: File) {
         val eulaFile = File("$directory/eula.txt")
         try {
             eulaFile.createNewFile()
