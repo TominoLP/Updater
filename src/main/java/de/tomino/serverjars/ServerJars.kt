@@ -184,7 +184,7 @@ object ServerJars {
                 println("For running the server its necessary to accept the eula. Would you accept the eula?")
 
                 val acceptInput = awaitInput({ true }, "Hmm.. your input was somehow incorrect...")
-                if (!acceptInput.equals(acceptInput, true) || !acceptInput.equals("y", true) || !acceptInput.equals("accept", true) || acceptInput.equals("yes")) {
+                if (!acceptInput.equals("true", true) || !acceptInput.equals("y", true) || !acceptInput.equals("accept", true) || acceptInput.equals("yes")) {
                     println("\nYou need to accept the eula to build a minecraft server!")
                     exitProcess(0)
                 }
