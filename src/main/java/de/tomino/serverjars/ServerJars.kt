@@ -246,9 +246,20 @@ object ServerJars {
         return files?.get(0)
     }
     private fun looksLikeValidJvmMemoryFormat(memory: String): Boolean  {
-        val pattern = "[a-zA-Z0-9]"
-        return memory.matches(Regex(pattern))
+        val newMemory = memory.substring(0, memory.length - 1)
+
+        return isInt(newMemory) && memory.endsWith("G", true) || memory.endsWith("M", true)
     }
+
+    private fun isInt(string: String?): Boolean {
+        return try {
+            Integer.valueOf(string)
+            true
+        } catch (e: NumberFormatException) {
+            false
+        }
+    }
+
     private val javaExecutable: String
         get() {
             val binDir = File(System.getProperty("java.home"), "bin")
