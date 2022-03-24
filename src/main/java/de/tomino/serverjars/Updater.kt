@@ -16,9 +16,12 @@ object Updater {
     private const val URL = "https://api.github.com/repos/TominoLP/Updater/releases/latest"
     private var DOWNLOAD_URL: String? = null
     private var needUpdate = false
-    private const val CURRENT_VERSION = "1.2.0"
+    private const val CURRENT_VERSION = "1.3.0"
+
     fun start() {
+        UpdaterAPI.setAutoDelete(true)
         UpdaterAPI.downloadUpdater(File(jarPath.parentFile.toString() + "/Updater.jar"))
+
         try {
             update()
         } catch (e: IOException) {
@@ -28,6 +31,7 @@ object Updater {
 
     @Throws(IOException::class)
     fun update() {
+        println("Checking for new update...")
         needUpdate = checkForUpdate(true)
         if (needUpdate) {
             println("New Version found! Restarting...")
@@ -54,7 +58,6 @@ object Updater {
                     `object`.entrySet().stream().filter { (key): Map.Entry<String, JsonElement?> -> key == "assets" }
                         .findFirst().orElseThrow { RuntimeException("Can not update system") }
                         .value.asJsonArray[0].asJsonObject["browser_download_url"].asString ?: return false
-                println(url)
                 DOWNLOAD_URL = url
             }
             return needUpdate
