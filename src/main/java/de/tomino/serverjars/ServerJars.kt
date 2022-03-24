@@ -158,7 +158,7 @@ object ServerJars {
                 if (memoryInput == null || memoryInput.isEmpty()) {
                     memoryInput = "1G"
                 }
-                println("\nWould you like to use aikar.co's JVM Startup flags (recommended for most users)? [Y/N]")
+                println("\nWould you like to use aikar.co's JVM Startup flags (recommended)? [Y/N]")
                 if ((awaitInput({ s: String ->
                         s.equals(
                             "y",
@@ -245,8 +245,9 @@ object ServerJars {
                 .listFiles { _: File?, name: String -> name.lowercase(Locale.getDefault()).endsWith(".jar") }
         return files?.get(0)
     }
-    private fun looksLikeValidJvmMemoryFormat(memory: String): Boolean {
-        return memory.matches(Regex.fromLiteral("[0-9]+[KMG]?"))
+    private fun looksLikeValidJvmMemoryFormat(memory: String): Boolean  {
+        val pattern = "[a-zA-Z0-9]"
+        return memory.matches(Regex(pattern))
     }
     private val javaExecutable: String
         get() {
@@ -288,6 +289,8 @@ object ServerJars {
         }
     }
 }
+
+
 
 fun awaitInput(predicate: Predicate<String>, errorMessage: String): String? {
     try {
