@@ -83,7 +83,7 @@ class Config(private val file: File) {
         }
     }
 
-    fun reset() {
+    private fun reset() {
         properties.clear()
         type = DEFAULT_TYPE
         version = DEFAULT_VERSION

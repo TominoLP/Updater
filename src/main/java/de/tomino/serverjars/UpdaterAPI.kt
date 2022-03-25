@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package de.tomino.serverjars
 
 import com.google.gson.JsonElement
@@ -25,7 +27,7 @@ object UpdaterAPI {
         downloadUpdater(destination, null)
     }
 
-    fun downloadUpdater(destination: File, consumer: Consumer<File?>?) {
+    private fun downloadUpdater(destination: File, consumer: Consumer<File?>?) {
         var destination = destination
         if (destination.isDirectory) destination = File("$destination/Updater.jar")
         val finalDestination = destination
@@ -66,20 +68,9 @@ object UpdaterAPI {
     }
 
     @Throws(IOException::class)
-    fun update(url: String?, newFile: File) {
-        if (updaterFile == null) throw NullPointerException("The downloadUpdater must be called before using this method. Alternate use the #update(updaterFile, url, newFile) method.")
-        update(updaterFile!!, url, newFile)
-    }
-
-    @Throws(IOException::class)
     fun update(url: String?, newFile: File, restart: Boolean) {
         if (updaterFile == null) throw NullPointerException("The downloadUpdater must be called before using this method. Alternate use the #update(updaterFile, url, newFile) method.")
         update(updaterFile!!, url, newFile, restart)
-    }
-
-    @Throws(IOException::class)
-    fun update(updaterFile: File, url: String?, newFile: File) {
-        update(updaterFile, getJarPath(), url, newFile, false)
     }
 
     @Throws(IOException::class)
@@ -101,7 +92,7 @@ object UpdaterAPI {
         )
         if (autoDelete) {
             autoDelete = false
-            downloadUpdater(oldFile.parentFile) { file: File? ->
+            downloadUpdater(oldFile.parentFile) {
                 try {
                     builder.start()
                 } catch (e: IOException) {
@@ -114,26 +105,7 @@ object UpdaterAPI {
         }
     }
 
-    fun needUpdate(version1: String, version2: String): Boolean {
-        return compareVersions(version1, version2) == -1
-    }
-
-    fun compareVersions(version1: String, version2: String): Int {
-        val levels1 = version1.split("\\.".toRegex()).toTypedArray()
-        val levels2 = version2.split("\\.".toRegex()).toTypedArray()
-        val length = Math.max(levels1.size, levels2.size)
-        for (i in 0 until length) {
-            val v1 = if (i < levels1.size) levels1[i].toInt() else 0
-            val v2 = if (i < levels2.size) levels2[i].toInt() else 0
-            val compare = v1.compareTo(v2)
-            if (compare != 0) {
-                return compare
-            }
-        }
-        return 0
-    }
-
-    fun getJarPath(): File? {
+    private fun getJarPath(): File? {
         if (jarPath == null) {
             try {
                 return File(UpdaterAPI::class.java.protectionDomain.codeSource.location.toURI().path).absoluteFile
@@ -148,7 +120,4 @@ object UpdaterAPI {
         autoDelete = value
     }
 
-    fun getCurrentUpdater(): File? {
-        return updaterFile
-    }
 }
