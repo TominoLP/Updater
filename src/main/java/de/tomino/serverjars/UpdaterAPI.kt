@@ -68,9 +68,20 @@ object UpdaterAPI {
     }
 
     @Throws(IOException::class)
+    fun update(url: String?, newFile: File) {
+        if (updaterFile == null) throw NullPointerException("The downloadUpdater must be called before using this method. Alternate use the #update(updaterFile, url, newFile) method.")
+        update(updaterFile!!, url, newFile)
+    }
+
+    @Throws(IOException::class)
     fun update(url: String?, newFile: File, restart: Boolean) {
         if (updaterFile == null) throw NullPointerException("The downloadUpdater must be called before using this method. Alternate use the #update(updaterFile, url, newFile) method.")
         update(updaterFile!!, url, newFile, restart)
+    }
+
+    @Throws(IOException::class)
+    fun update(updaterFile: File, url: String?, newFile: File) {
+        update(updaterFile, getJarPath(), url, newFile, false)
     }
 
     @Throws(IOException::class)
@@ -92,7 +103,7 @@ object UpdaterAPI {
         )
         if (autoDelete) {
             autoDelete = false
-            downloadUpdater(oldFile.parentFile) {
+            downloadUpdater(oldFile.parentFile) { file: File? ->
                 try {
                     builder.start()
                 } catch (e: IOException) {
@@ -103,6 +114,25 @@ object UpdaterAPI {
         } else {
             builder.start()
         }
+    }
+
+    fun needUpdate(version1: String, version2: String): Boolean {
+        return compareVersions(version1, version2) == -1
+    }
+
+    private fun compareVersions(version1: String, version2: String): Int {
+        val levels1 = version1.split("\\.".toRegex()).toTypedArray()
+        val levels2 = version2.split("\\.".toRegex()).toTypedArray()
+        val length = Math.max(levels1.size, levels2.size)
+        for (i in 0 until length) {
+            val v1 = if (i < levels1.size) levels1[i].toInt() else 0
+            val v2 = if (i < levels2.size) levels2[i].toInt() else 0
+            val compare = v1.compareTo(v2)
+            if (compare != 0) {
+                return compare
+            }
+        }
+        return 0
     }
 
     private fun getJarPath(): File? {
@@ -120,4 +150,7 @@ object UpdaterAPI {
         autoDelete = value
     }
 
+    fun getCurrentUpdater(): File? {
+        return updaterFile
+    }
 }
