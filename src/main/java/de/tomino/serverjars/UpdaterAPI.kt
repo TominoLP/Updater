@@ -52,7 +52,14 @@ object UpdaterAPI {
         try {
             val connect = URL(API).openConnection() as HttpURLConnection
             connect.connectTimeout = 10000
+
+            connect.setRequestProperty("Accept", "application/vnd.github.v3+json")
+            connect.setRequestProperty("Content-Type", "application/json")
+
+            connect.setRequestProperty("User-Agent", "ZeusSeinGrossopa/UpdaterAPI (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")")
+
             connect.connect()
+
             val `in` = connect.inputStream
             val reader = BufferedReader(InputStreamReader(`in`, StandardCharsets.UTF_8))
             if (connect.responseCode == 200) {
