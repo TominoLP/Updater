@@ -68,13 +68,14 @@ object ServerJars {
             println("\nThe attempt was successful!")
         }
 
-        val vmArgs = ManagementFactory.getRuntimeMXBean().inputArguments.toTypedArray()
+        val vmArgs = cfg.jvmArgs
 
-        val cmd = arrayOfNulls<String>(vmArgs.size + args.size + 3)
+        val cmd = arrayOfNulls<String>(vmArgs.size + args.size + 4)
         cmd[0] = javaExecutable
         System.arraycopy(vmArgs, 0, cmd, 1, vmArgs.size)
         cmd[1 + vmArgs.size] = "-jar"
         cmd[2 + vmArgs.size] = jar.absolutePath
+        cmd[3 + vmArgs.size] = "--nogui"
         System.arraycopy(args, 0, cmd, 3 + vmArgs.size, args.size)
         try {
             val process = ProcessBuilder(*cmd)
