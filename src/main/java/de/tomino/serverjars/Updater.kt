@@ -31,16 +31,18 @@ object Updater {
 
     @Throws(IOException::class)
     fun update() {
-        println("Checking for new update...")
         needUpdate = checkForUpdate(true)
         if (needUpdate) {
-            println("New Version found! Restarting...")
+            println("New updater Version found! Restarting...")
             UpdaterAPI.update(
                 DOWNLOAD_URL,
                 File(jarPath.parentFile.absoluteFile.toString() + "/" + jarPath.name),
                 false
             )
             exitProcess(0)
+        }
+        else{
+            println("your running on the latest version of the updater")
         }
     }
 
