@@ -6,7 +6,6 @@ import com.serverjars.api.request.JarRequest
 import com.serverjars.api.request.LatestRequest
 import com.serverjars.api.request.TypesRequest
 import java.io.*
-import java.lang.management.ManagementFactory
 import java.nio.file.Files
 import java.security.NoSuchAlgorithmException
 import java.util.*

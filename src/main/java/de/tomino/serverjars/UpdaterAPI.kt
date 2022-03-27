@@ -1,5 +1,3 @@
-@file:Suppress("NAME_SHADOWING")
-
 package de.tomino.serverjars
 
 import com.google.gson.JsonElement
@@ -56,7 +54,10 @@ object UpdaterAPI {
             connect.setRequestProperty("Accept", "application/vnd.github.v3+json")
             connect.setRequestProperty("Content-Type", "application/json")
 
-            connect.setRequestProperty("User-Agent", "ZeusSeinGrossopa/UpdaterAPI (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")")
+            connect.setRequestProperty(
+                "User-Agent",
+                "ZeusSeinGrossopa/UpdaterAPI (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")"
+            )
 
             connect.connect()
 
