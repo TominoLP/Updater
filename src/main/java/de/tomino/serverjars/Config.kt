@@ -38,7 +38,7 @@ class Config(private val file: File) {
             return args
         }
     val serverJarDirectory: String
-        get() = properties.getProperty("MinecraftJarDirectory", SERVER_JAR_DIRECTORY)
+        get() = properties.getProperty("MinecraftJarDirectory", JAR_DIRECTORY)
 
     fun shouldDeleteOtherJarVersions(): Boolean {
         return java.lang.Boolean.parseBoolean(properties.getProperty("deleteOtherMinecraftJarVersions", "true"))
@@ -88,15 +88,15 @@ class Config(private val file: File) {
         type = DEFAULT_TYPE
         version = DEFAULT_VERSION
         setJvmArgs(DEFAULT_JVM_ARGS)
-        properties.setProperty("MinecraftJarDirectory", SERVER_JAR_DIRECTORY)
+        properties.setProperty("MinecraftJarDirectory", JAR_DIRECTORY)
         properties.setProperty("deleteOtherMinecraftJarVersions", "true")
     }
 
     companion object {
-        private const val HEADER = "Acceptable Versions (latest, 1.17.1, 1.8, etc...)"
-        private const val DEFAULT_TYPE = "paper"
+        private const val HEADER = "Acceptable Versions (latest, 1.17.1, 1.12.2, etc...)"
+        private const val DEFAULT_TYPE = "purpur"
         private const val DEFAULT_VERSION = "latest"
         private const val DEFAULT_JVM_ARGS = "-Xmx1G"
-        private const val SERVER_JAR_DIRECTORY = "./jar"
+        private const val JAR_DIRECTORY = "./jar"
     }
 }

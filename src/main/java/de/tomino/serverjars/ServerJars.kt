@@ -90,7 +90,7 @@ object ServerJars {
                     }
                     break
                 } catch (ignore: InterruptedException) {
-                    TODO()
+
                 }
             }
         } catch (ex: IOException) {
