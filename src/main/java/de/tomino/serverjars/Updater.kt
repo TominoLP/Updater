@@ -13,10 +13,11 @@ import java.util.*
 import kotlin.system.exitProcess
 
 object Updater {
+
     private const val URL = "https://api.github.com/repos/TominoLP/Updater/releases/latest"
     private var DOWNLOAD_URL: String? = null
     private var needUpdate = false
-    private const val CURRENT_VERSION = "1.3.2"
+    private const val CURRENT_VERSION = "1.3.7"
 
     fun start() {
         UpdaterAPI.setAutoDelete(true)
@@ -40,8 +41,7 @@ object Updater {
                 false
             )
             exitProcess(0)
-        }
-        else{
+        } else {
             println("your running on the latest version of the updater")
         }
     }
@@ -54,7 +54,10 @@ object Updater {
         connect.setRequestProperty("Accept", "application/vnd.github.v3+json")
         connect.setRequestProperty("Content-Type", "application/json")
 
-        connect.setRequestProperty("User-Agent", "TominoLP/Updater (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")")
+        connect.setRequestProperty(
+            "User-Agent",
+            "TominoLP/Updater (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")"
+        )
 
         connect.connect()
 

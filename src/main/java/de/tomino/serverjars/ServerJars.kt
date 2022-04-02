@@ -6,13 +6,11 @@ import com.serverjars.api.request.JarRequest
 import com.serverjars.api.request.LatestRequest
 import com.serverjars.api.request.TypesRequest
 import java.io.*
-import java.lang.management.ManagementFactory
 import java.nio.file.Files
 import java.security.NoSuchAlgorithmException
 import java.util.*
 import java.util.function.Predicate
 import kotlin.system.exitProcess
-
 
 object ServerJars {
 
@@ -34,6 +32,9 @@ object ServerJars {
                     "╚█████╔╝╚█████╔╝███████╗██║  ██║██║ ╚███║██████╔╝██║     ██║██║  ██║███████╗\n" +
                     " ╚════╝  ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚══╝╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝"
         )
+
+        println("\nStarting...\n")
+
         println("\nSearching for updates... \n")
 
         try {
@@ -68,13 +69,14 @@ object ServerJars {
             println("\nThe attempt was successful!")
         }
 
-        val vmArgs = ManagementFactory.getRuntimeMXBean().inputArguments.toTypedArray()
+        val vmArgs = cfg.jvmArgs
 
-        val cmd = arrayOfNulls<String>(vmArgs.size + args.size + 3)
+        val cmd = arrayOfNulls<String>(vmArgs.size + args.size + 4)
         cmd[0] = javaExecutable
         System.arraycopy(vmArgs, 0, cmd, 1, vmArgs.size)
         cmd[1 + vmArgs.size] = "-jar"
         cmd[2 + vmArgs.size] = jar.absolutePath
+        cmd[3 + vmArgs.size] = "--nogui"
         System.arraycopy(args, 0, cmd, 3 + vmArgs.size, args.size)
         try {
             val process = ProcessBuilder(*cmd)
@@ -90,7 +92,7 @@ object ServerJars {
                     }
                     break
                 } catch (ignore: InterruptedException) {
-                    TODO()
+
                 }
             }
         } catch (ex: IOException) {

@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package de.tomino.serverjars
 
 import java.io.IOException
@@ -6,10 +8,9 @@ import java.nio.file.Path
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and
-import kotlin.Throws as Throws1
 
 object HashMD5 {
-    @Throws1(IOException::class, NoSuchAlgorithmException::class)
+    @Throws(IOException::class, NoSuchAlgorithmException::class)
     operator fun get(path: Path?): String {
         val hash = StringBuilder()
         for (aByte in MessageDigest.getInstance("MD5").digest(Files.readAllBytes(path))) {
