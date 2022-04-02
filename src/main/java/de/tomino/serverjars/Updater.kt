@@ -13,6 +13,7 @@ import java.util.*
 import kotlin.system.exitProcess
 
 object Updater {
+
     private const val URL = "https://api.github.com/repos/TominoLP/Updater/releases/latest"
     private var DOWNLOAD_URL: String? = null
     private var needUpdate = false

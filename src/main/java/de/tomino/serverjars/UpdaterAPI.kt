@@ -12,13 +12,13 @@ import java.net.URISyntaxException
 import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.function.Consumer
+import kotlin.math.max
 
 object UpdaterAPI {
     private const val API = "https://api.github.com/repos/ZeusSeinGrossopa/UpdaterAPI/releases/latest"
 
     private var updaterFile: File? = null
     private var autoDelete = false
-
     private val jarPath: File? = null
 
     fun downloadUpdater(destination: File) {
@@ -53,7 +53,6 @@ object UpdaterAPI {
 
             connect.setRequestProperty("Accept", "application/vnd.github.v3+json")
             connect.setRequestProperty("Content-Type", "application/json")
-
             connect.setRequestProperty(
                 "User-Agent",
                 "ZeusSeinGrossopa/UpdaterAPI (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")"
@@ -73,12 +72,6 @@ object UpdaterAPI {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    @Throws(IOException::class)
-    fun update(url: String?, newFile: File) {
-        if (updaterFile == null) throw NullPointerException("The downloadUpdater must be called before using this method. Alternate use the #update(updaterFile, url, newFile) method.")
-        update(updaterFile!!, url, newFile)
     }
 
     @Throws(IOException::class)
@@ -131,7 +124,7 @@ object UpdaterAPI {
     private fun compareVersions(version1: String, version2: String): Int {
         val levels1 = version1.split("\\.".toRegex()).toTypedArray()
         val levels2 = version2.split("\\.".toRegex()).toTypedArray()
-        val length = Math.max(levels1.size, levels2.size)
+        val length = max(levels1.size, levels2.size)
         for (i in 0 until length) {
             val v1 = if (i < levels1.size) levels1[i].toInt() else 0
             val v2 = if (i < levels2.size) levels2[i].toInt() else 0
