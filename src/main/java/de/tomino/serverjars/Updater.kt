@@ -17,7 +17,7 @@ object Updater {
     private const val URL = "https://api.github.com/repos/TominoLP/Updater/releases/latest"
     private var DOWNLOAD_URL: String? = null
     private var needUpdate = false
-    private const val CURRENT_VERSION = "1.3.4"
+    private const val CURRENT_VERSION = "1.3.7"
 
     fun start() {
         UpdaterAPI.setAutoDelete(true)
