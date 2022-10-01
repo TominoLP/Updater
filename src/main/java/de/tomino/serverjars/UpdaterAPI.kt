@@ -33,7 +33,8 @@ object UpdaterAPI {
     @JvmOverloads
     fun downloadUpdater(destination: File?, consumer: Consumer<File?>? = null) {
         var destination = destination
-        destination = File(if (destination!!.isDirectory) File(destination.absolutePath).toString() + "/Updater.jar" else destination.absolutePath)
+        destination =
+            File(if (destination!!.isDirectory) File(destination.absolutePath).toString() + "/Updater.jar" else destination.absolutePath)
         val finalDestination: File = destination
         currentUpdater = finalDestination
         if (autoDelete) {
@@ -54,17 +55,22 @@ object UpdaterAPI {
 
     fun getLatestReleaseFromGithub(githubUser: String, repository: String, consumer: Consumer<Array<String?>>) {
         try {
-            val connect = URL(String.format(GITHUB_CUSTOM_URL, "$githubUser/$repository")).openConnection() as HttpURLConnection
+            val connect =
+                URL(String.format(GITHUB_CUSTOM_URL, "$githubUser/$repository")).openConnection() as HttpURLConnection
             connect.connectTimeout = 10000
             connect.setRequestProperty("Accept", "application/vnd.github.v3+json")
             connect.setRequestProperty("Content-Type", "application/json")
-            connect.setRequestProperty("User-Agent", githubUser + "/" + repository + " (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")")
+            connect.setRequestProperty(
+                "User-Agent",
+                githubUser + "/" + repository + " (" + System.getProperty("os.name") + "; " + System.getProperty("os.arch") + ")"
+            )
             connect.connect()
             val `in` = connect.inputStream
             val reader = BufferedReader(InputStreamReader(`in`, StandardCharsets.UTF_8))
             if (connect.responseCode == 200) {
                 val `object` = JsonParser.parseReader(reader).asJsonObject
-                val downloadLink = `object`.entrySet().stream().filter { (key): Map.Entry<String, JsonElement?> -> key == "assets" }
+                val downloadLink =
+                    `object`.entrySet().stream().filter { (key): Map.Entry<String, JsonElement?> -> key == "assets" }
                         .findFirst().orElseThrow { RuntimeException("Can not update system") }
                         .value.asJsonArray[0].asJsonObject["browser_download_url"].asString
                 consumer.accept(arrayOf(`object`["tag_name"].asString, downloadLink))
@@ -99,7 +105,15 @@ object UpdaterAPI {
     @Throws(IOException::class)
     fun update(updaterFile: File?, oldFile: File?, url: String?, newFile: File, restart: Boolean) {
         val javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"
-        val builder = ProcessBuilder(javaBin, "-jar", updaterFile!!.absolutePath, url, oldFile!!.absolutePath, newFile.absolutePath, if (restart) "true" else "")
+        val builder = ProcessBuilder(
+            javaBin,
+            "-jar",
+            updaterFile!!.absolutePath,
+            url,
+            oldFile!!.absolutePath,
+            newFile.absolutePath,
+            if (restart) "true" else ""
+        )
         if (autoDelete) {
             autoDelete = false
             downloadUpdater(updaterFile) { file: File? ->
